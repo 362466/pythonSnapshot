@@ -10,7 +10,6 @@ ec2 = session.resource('ec2')
 def list_instances(project):
     instances = []
     if project:
-        print("in if")
         filters = [{'Name': 'tag:project', 'Values': [project]}]
         instances = ec2.instances.filter(Filters=filters)
     else:
@@ -18,7 +17,8 @@ def list_instances(project):
         instances = ec2.instances.all()
 
     for i in instances:
-        print(i.id)
+        tags = {t['Key']: t['Value'] for t in i.tags or []}
+        print(', '.join((i.id, tags.get('project','No tag'))))
 
 
 if __name__ == "__main__":
